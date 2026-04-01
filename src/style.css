@@ -1,0 +1,102 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #app {
+  width: 100%;
+  height: 100%;
+  font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+  font-size: 13px;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+}
+
+/* ── パネル ─────────────────────────────── */
+#panel {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 200px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10;
+}
+
+h1 {
+  font-size: 13px;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* ── 凡例 ───────────────────────────────── */
+#legend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.legend-title {
+  font-size: 11px;
+  color: #555;
+}
+
+.legend-scale {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #333;
+}
+
+.legend-color {
+  width: 20px;
+  height: 4px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── ステータス ─────────────────────────── */
+#status {
+  font-size: 11px;
+  color: #888;
+}
+
+/* ── ポップアップ ────────────────────────── */
+.popup-content table {
+  border-collapse: collapse;
+  font-size: 12px;
+  width: 100%;
+}
+
+.popup-content td {
+  padding: 2px 6px 2px 0;
+  vertical-align: top;
+}
+
+.popup-content td:first-child {
+  color: #666;
+  white-space: nowrap;
+  padding-right: 10px;
+}
+
+/* ── MapLibre attribution ───────────────── */
+.maplibregl-ctrl-attrib {
+  font-size: 10px;
+}
