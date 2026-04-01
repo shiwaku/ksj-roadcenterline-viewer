@@ -15,25 +15,42 @@ const ROAD_TYPE: Record<string, string> = {
   "6": "不明",
 };
 
-const DIRECTION: Record<string, string> = {
-  "1": "上下線なし／不明",
-  "2": "上り線",
-  "3": "下り線",
+// N13_002: 種別（道路中心線種別コード）
+const ROAD_KIND: Record<string, string> = {
+  "1": "通常部",
+  "2": "庭園路",
+  "3": "徒歩道",
+  "4": "石段",
+  "5": "不明",
 };
 
+// N13_004: 道路状態（道路状態種別コード）
+const ROAD_STATE: Record<string, string> = {
+  "1": "通常部",
+  "2": "橋・高架",
+  "3": "トンネル",
+  "4": "雪覆い",
+  "5": "建設中",
+  "6": "その他",
+  "7": "不明",
+};
+
+// N13_006: 幅員区分（幅員区分コード）
 const WIDTH_CLASS: Record<string, string> = {
-  "0": "不明",
-  "1": "13m以上",
-  "2": "5.5m以上13m未満",
-  "3": "3m以上5.5m未満",
-  "4": "3m未満",
+  "1": "3m未満",
+  "2": "3m-5.5m未満",
+  "3": "5.5m-13m未満",
+  "4": "13m-19.5m未満",
+  "5": "19.5m以上",
+  "6": "不明",
 };
 
-const SPECIFIC_ROAD: Record<string, string> = {
-  "1": "該当しない",
-  "2": "高速自動車国道",
-  "3": "一般国道自動車専用道路",
+// N13_007: 有料区分（有料区分コード）
+const TOLL: Record<string, string> = {
+  "1": "無料",
+  "2": "有料",
 };
+
 
 const ROAD_COLOR: Record<string, string> = {
   "1": "#e60026",  // 国道
@@ -127,21 +144,20 @@ map.on("load", () => {
     const typeCode = String(props["N13_003"] ?? "");
     const typeName = ROAD_TYPE[typeCode] ?? typeCode;
 
-    const dirCode   = String(props["N13_002"] ?? "");
-    const widthCode = String(props["N13_004"] ?? "");
-    const width     = props["N13_005"];
-    const lanes     = props["N13_006"];
-    const specCode  = String(props["N13_007"] ?? "");
+    const kindCode  = String(props["N13_002"] ?? "");
+    const stateCode = String(props["N13_004"] ?? "");
+    const widthCode = String(props["N13_006"] ?? "");
+    const tollCode  = String(props["N13_007"] ?? "");
 
     const rows = [
-      ["路線コード",   props["N13_008"] ?? "—"],
-      ["更新日",       props["N13_001"] ?? "—"],
-      ["道路分類",     `${typeName}`],
-      ["上下線区分",   DIRECTION[dirCode]   ?? dirCode],
-      ["幅員区分",     WIDTH_CLASS[widthCode] ?? widthCode],
-      ["幅員",         width ? `${width} m` : "不明"],
-      ["車線数",       lanes != null && lanes !== 0 ? `${lanes} 車線` : "不明"],
-      ["特定道路",     SPECIFIC_ROAD[specCode] ?? specCode],
+      ["データ登録日",     props["N13_001"] ?? "—"],
+      ["種別",             ROAD_KIND[kindCode]   ?? kindCode],
+      ["道路分類",         typeName],
+      ["道路状態",         ROAD_STATE[stateCode] ?? stateCode],
+      ["階層順",           props["N13_005"] ?? "—"],
+      ["幅員区分",         WIDTH_CLASS[widthCode] ?? widthCode],
+      ["有料区分",         TOLL[tollCode]         ?? tollCode],
+      ["二次メッシュ番号", props["N13_008"] ?? "—"],
     ]
       .map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`)
       .join("");
