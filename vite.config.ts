@@ -5,7 +5,7 @@ import fs from "fs";
 const docsDir = path.resolve(__dirname, "..");
 
 export default defineConfig(({ command }) => ({
-  base: command === "build" ? "/japan-mlit-traffic-data/" : "/",
+  base: command === "build" ? "/ksj-roadcenterline-viewer/" : "/",
   publicDir: "public",
   server: {
     port: 5173,
@@ -64,8 +64,8 @@ export default defineConfig(({ command }) => ({
     },
   ],
   build: {
-    outDir: path.resolve(__dirname, "../docs"),
-    emptyOutDir: false,
+    outDir: path.resolve(__dirname, "docs"),
+    emptyOutDir: true,
     rollupOptions: {
       output: {
         manualChunks: {

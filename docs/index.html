@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>国土数値情報 道路中心線ビューワー</title>
+    <script type="module" crossorigin src="/ksj-roadcenterline-viewer/assets/index-CmbSCY54.js"></script>
+    <link rel="modulepreload" crossorigin href="/ksj-roadcenterline-viewer/assets/maplibre-CEzeW31l.js">
+    <link rel="modulepreload" crossorigin href="/ksj-roadcenterline-viewer/assets/pmtiles-D2IMUaje.js">
+    <link rel="stylesheet" crossorigin href="/ksj-roadcenterline-viewer/assets/index-lhochPjJ.css">
+  </head>
+  <body>
+    <div id="app">
+      <div id="map"></div>
+      <div id="panel">
+        <h1>国土数値情報<br>道路中心線（2024年）</h1>
+        <div id="legend">
+          <div class="legend-title">道路分類（N13_003）</div>
+          <div class="legend-scale">
+            <div class="legend-item"><span class="legend-color" style="background:#003087"></span>高速自動車国道等</div>
+            <div class="legend-item"><span class="legend-color" style="background:#e60026"></span>国道</div>
+            <div class="legend-item"><span class="legend-color" style="background:#1a73e8"></span>都道府県道</div>
+            <div class="legend-item"><span class="legend-color" style="background:#28a745"></span>市区町村道等</div>
+            <div class="legend-item"><span class="legend-color" style="background:#888888"></span>その他</div>
+            <div class="legend-item"><span class="legend-color" style="background:#cccccc"></span>不明</div>
+          </div>
+        </div>
+        <div id="status">道路中心線: 約2,405万フィーチャ</div>
+      </div>
+    </div>
+  </body>
+</html>
