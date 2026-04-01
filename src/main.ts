@@ -83,56 +83,101 @@ map.on("load", () => {
     url: `pmtiles://${PMTILES_URL}`,
   });
 
-  const colorExpr: maplibregl.ExpressionSpecification = [
-    "match",
-    ["to-number", ["get", "N13_003"]],
-    1, ROAD_COLOR["1"],
-    2, ROAD_COLOR["2"],
-    3, ROAD_COLOR["3"],
-    4, ROAD_COLOR["4"],
-    5, ROAD_COLOR["5"],
-    6, ROAD_COLOR["6"],
-    "#cccccc",
-  ];
+  const lineLayout: maplibregl.LineLayerSpecification["layout"] = {
+    "line-join": "round",
+    "line-cap": "round",
+  };
 
-  // Z2-12: 国道・高速のみ
+  // Z2-12: 国道・高速のみ（国道→高速の順で上書き描画）
   map.addLayer({
-    id: "road-line-major",
+    id: "road-line-major-kokudo",
     type: "line",
     source: "road",
     "source-layer": "RoadCenterLine",
     minzoom: 2,
     maxzoom: 12,
-    filter: ["match", ["to-number", ["get", "N13_003"]], [1, 4], true, false],
-    layout: { "line-join": "round", "line-cap": "round" },
+    filter: ["==", ["to-number", ["get", "N13_003"]], 1],
+    layout: lineLayout,
     paint: {
-      "line-color": colorExpr,
-      "line-width": [
-        "interpolate", ["linear"], ["zoom"],
-        2,  ["match", ["to-number", ["get", "N13_003"]], 4, 1.0, 0.5],
-        8,  ["match", ["to-number", ["get", "N13_003"]], 4, 2.5, 1.5],
-        12, ["match", ["to-number", ["get", "N13_003"]], 4, 5.0, 3.0],
-      ],
+      "line-color": ROAD_COLOR["1"],
+      "line-width": ["interpolate", ["linear"], ["zoom"], 2, 0.5, 8, 1.5, 12, 3.0],
       "line-opacity": 0.8,
     },
   });
 
-  // Z13-20: 全道路
   map.addLayer({
-    id: "road-line-all",
+    id: "road-line-major-highway",
+    type: "line",
+    source: "road",
+    "source-layer": "RoadCenterLine",
+    minzoom: 2,
+    maxzoom: 12,
+    filter: ["==", ["to-number", ["get", "N13_003"]], 4],
+    layout: lineLayout,
+    paint: {
+      "line-color": ROAD_COLOR["4"],
+      "line-width": ["interpolate", ["linear"], ["zoom"], 2, 1.0, 8, 2.5, 12, 5.0],
+      "line-opacity": 0.8,
+    },
+  });
+
+  // Z12-20: 全道路（市区町村道等→都道府県道→国道→高速の順で上書き描画）
+  map.addLayer({
+    id: "road-line-all-minor",
     type: "line",
     source: "road",
     "source-layer": "RoadCenterLine",
     minzoom: 12,
-    layout: { "line-join": "round", "line-cap": "round" },
+    filter: ["match", ["to-number", ["get", "N13_003"]], [3, 5, 6], true, false],
+    layout: lineLayout,
     paint: {
-      "line-color": colorExpr,
-      "line-width": [
-        "interpolate", ["linear"], ["zoom"],
-        13, ["match", ["to-number", ["get", "N13_003"]], 4, 4.0, 1, 2.5, 1.0],
-        16, ["match", ["to-number", ["get", "N13_003"]], 4, 8.0, 1, 5.0, 2.0],
-        20, ["match", ["to-number", ["get", "N13_003"]], 4, 14.0, 1, 9.0, 4.0],
-      ],
+      "line-color": ["match", ["to-number", ["get", "N13_003"]], 3, ROAD_COLOR["3"], 5, ROAD_COLOR["5"], ROAD_COLOR["6"]],
+      "line-width": ["interpolate", ["linear"], ["zoom"], 13, 1.0, 16, 2.0, 20, 4.0],
+      "line-opacity": 0.8,
+    },
+  });
+
+  map.addLayer({
+    id: "road-line-all-pref",
+    type: "line",
+    source: "road",
+    "source-layer": "RoadCenterLine",
+    minzoom: 12,
+    filter: ["==", ["to-number", ["get", "N13_003"]], 2],
+    layout: lineLayout,
+    paint: {
+      "line-color": ROAD_COLOR["2"],
+      "line-width": ["interpolate", ["linear"], ["zoom"], 13, 1.0, 16, 2.0, 20, 4.0],
+      "line-opacity": 0.8,
+    },
+  });
+
+  map.addLayer({
+    id: "road-line-all-kokudo",
+    type: "line",
+    source: "road",
+    "source-layer": "RoadCenterLine",
+    minzoom: 12,
+    filter: ["==", ["to-number", ["get", "N13_003"]], 1],
+    layout: lineLayout,
+    paint: {
+      "line-color": ROAD_COLOR["1"],
+      "line-width": ["interpolate", ["linear"], ["zoom"], 13, 2.5, 16, 5.0, 20, 9.0],
+      "line-opacity": 0.8,
+    },
+  });
+
+  map.addLayer({
+    id: "road-line-all-highway",
+    type: "line",
+    source: "road",
+    "source-layer": "RoadCenterLine",
+    minzoom: 12,
+    filter: ["==", ["to-number", ["get", "N13_003"]], 4],
+    layout: lineLayout,
+    paint: {
+      "line-color": ROAD_COLOR["4"],
+      "line-width": ["interpolate", ["linear"], ["zoom"], 13, 4.0, 16, 8.0, 20, 14.0],
       "line-opacity": 0.8,
     },
   });
@@ -168,7 +213,11 @@ map.on("load", () => {
       .addTo(map);
   };
 
-  for (const id of ["road-line-major", "road-line-all"]) {
+  const allLayerIds = [
+    "road-line-major-kokudo", "road-line-major-highway",
+    "road-line-all-minor", "road-line-all-pref", "road-line-all-kokudo", "road-line-all-highway",
+  ];
+  for (const id of allLayerIds) {
     map.on("click", id, clickHandler);
     map.on("mouseenter", id, () => { map.getCanvas().style.cursor = "pointer"; });
     map.on("mouseleave", id, () => { map.getCanvas().style.cursor = ""; });
